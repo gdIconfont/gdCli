@@ -1,0 +1,13 @@
+{
+  presets: [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "browsers": ["ie >=9"]
+      },
+      "useBuiltIns": true
+    }],
+    'stage-3'
+  ],
+  plugins: ['transform-runtime', 'syntax-dynamic-import']
+}
