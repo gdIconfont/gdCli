@@ -2,12 +2,11 @@ const path = require('path')
 const os = require('os')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HappyPack = require('happypack')
-const TransformModulesPlugin = require('webpack-transform-modules-plugin')
+// const TransformModulesPlugin = require('webpack-transform-modules-plugin')
 
 const rootPath = process.cwd()
 let happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
@@ -36,7 +35,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|vue)$/,
+        test: /\.js$/,
         loader: 'eslint-loader',
         enforce: 'pre',
         include: path.resolve(rootPath, './src/'),
@@ -51,11 +50,11 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'happypack/loader',
-        include: path.resolve(rootPath, './src/'),
-        options: {
+        include: path.resolve(rootPath, './src/')
+        /* options: {
           'presets': ['env', 'stage-3'],
           "plugins": ["transform-runtime"]
-        }
+        } */
       },
       {
         test: /\.css$/,
@@ -98,16 +97,19 @@ module.exports = {
     runtimeChunk: true
   },
   plugins: [
+    new webpack.NoEmitOnErrorsPlugin(),
     new VueLoaderPlugin(),
-		new TransformModulesPlugin(),
-    new MiniCssExtractPlugin(),
+		// new TransformModulesPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[name].css',
+    }),
     new HappyPack({
       loaders: [{
         path: 'babel-loader',
         options: {
           'cachedirectory': true,
           'presets': ['env', 'stage-3']
-          // 'plugins': ["transform-runtime"]
         }
       }],
       threadPool: happyThreadPool,
@@ -115,26 +117,23 @@ module.exports = {
       verbose: true
     }),
     new HtmlWebpackPlugin({
-      title: '首页',
+      filename: '../../views/dist/index.html',
+      template: 'views/index.html',
+      chunksSortMode: 'auto',
       alwaysWriteToDisk: true,
-      template: './views/index.html',
-      filename: 'index.html'
-      /* minify: {
+      inject: true,
+      minify: {
         removeComments: true, // 去掉注释
         minifyJS: true, // 压缩js
         minifyCSS: true, // 压缩css
         collapseWhitespace: true, // 去掉空格
         useShortDoctype: true,
         removeScriptTypeAttributes: true
-      } */
-    }),
-    new HtmlWebpackHarddiskPlugin({
-      outputPath: path.resolve(__dirname, '../views/dist')
+      }
     }),
     new ScriptExtHtmlWebpackPlugin({
       //`runtime` must same as runtimeChunk name. default is `runtime`
-      inline: /runtime~app.js$/
-    }),
-    new webpack.NoEmitOnErrorsPlugin()
+      inline:['runtime~app.js']
+    })
   ]
 }
