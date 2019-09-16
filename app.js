@@ -37,15 +37,16 @@ app.set('view engine', 'html')
 app.use(logger('dev'))
 app.use(bodyParser.json({limit:'10mb'}))
 app.use(bodyParser.urlencoded({ extended: false, limit:'10mb'}))
-app.use(cookieParser('www'));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')))
 app.use(session({
-  secret: 'www',
-  name: 'www',   // 这里的name值得是cookie的name，默认cookie的name是：connect.sid
+  secret: '9208',
+  // name: 'www',   // 这里的name值得是cookie的name，默认cookie的name是：connect.sid
   cookie: {
     // maxAge: 24*60*60*1000 
   }, // 设置maxAge是80000ms，即80s后session和相应的cookie失效过期
-  resave: true,
+  rolling: true,
+  resave: false,
   saveUninitialized:true
 }));
 
