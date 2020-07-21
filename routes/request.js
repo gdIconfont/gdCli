@@ -4,18 +4,16 @@ var axios = require('axios')
 
 function request (options, req, res, cb) {
   var params = options.params || []
-  var url = `${options.url}.jsmeb`
+  // var url = options.url
   var baseUrl = options.baseUrl
   var token = options.token || ''
   // token统一放在user对象下
   try {
-    token = req.session.user.token
+    token = req.session.user.token || ''
   } catch (e) {
     token = ''
   }
-  if (req.method === 'GET') {
-    url = url.replace(/\?.*/, `.jsmeb?jseb=${params}`)
-  }
+  var url = `${options.url}.ssoeb?ebtoken=${token}`
   if (!baseUrl) baseUrl = cbaseUrl
   return axios({
     method: req.method,
@@ -26,7 +24,7 @@ function request (options, req, res, cb) {
     headers: {
       'Content-Type': 'text/html;charset=utf-8',
       'Content-Length': Buffer.byteLength(JSON.stringify(params)),
-      'ebauth': token
+      // 'ebauth': token
     },
     transformResponse: [function (data) {
       // 对 data 进行任意转换处理

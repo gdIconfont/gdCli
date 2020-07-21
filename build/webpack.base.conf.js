@@ -4,20 +4,21 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+// const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 const HappyPack = require('happypack')
+const appConfig = require('../app.config.js')
 // const TransformModulesPlugin = require('webpack-transform-modules-plugin')
 
 const rootPath = process.cwd()
 let happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
-let outputPath = path.resolve(rootPath, './static/dist/')
-let publicPath = '/dist/'
+let outputPath = path.resolve(rootPath, './dist/static/')
 module.exports = {
   output: {
     path: outputPath,
     filename: '[name].js',
     chunkFilename: `[name].js?v=${Math.random()}`,
-    publicPath: publicPath
+    publicPath: (appConfig.nginx ? appConfig.poxcyPath + '/static/' : '/static/')
   },
   externals: {
     /* 'vue': 'Vue',
@@ -28,13 +29,16 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'components': path.resolve(rootPath, './src/components')
-    }
+      'components': path.resolve(rootPath, './src/components'),
+      '@': path.resolve('src'),
+      'vue$': 'vue/dist/vue.esm.js'
+    },
+    // mainFields: ['module', 'main']
   },
   devtool: 'cheap-module-source-map',
   module: {
     rules: [
-      {
+      /* {
         test: /\.js$/,
         loader: 'eslint-loader',
         enforce: 'pre',
@@ -42,7 +46,7 @@ module.exports = {
         options: {
           formatter: require('eslint-friendly-formatter')
         }
-      },
+      }, */
       {
         test: /\.vue$/,
         loader: 'vue-loader'
@@ -57,17 +61,7 @@ module.exports = {
         } */
       },
       {
-        test: /\.css$/,
-				// include: path.resolve(__dirname, '../src/'),
-        use: [
-					'css-hot-loader',
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader'
-        ]
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        test: /\.(png|jpe?g|gif|svg|ttf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000
@@ -85,12 +79,12 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks: "all",
+      maxAsyncRequests: 1,
       cacheGroups: {
         libs: {
           name: "vendor",
           test: /[\\/]node_modules[\\/]/,
-          priority: 10,
-          chunks: 'initial'
+          priority: 10
         }
       }
     },
@@ -100,10 +94,6 @@ module.exports = {
     new webpack.NoEmitOnErrorsPlugin(),
     new VueLoaderPlugin(),
 		// new TransformModulesPlugin(),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[name].css',
-    }),
     new HappyPack({
       loaders: [{
         path: 'babel-loader',
@@ -117,11 +107,13 @@ module.exports = {
       verbose: true
     }),
     new HtmlWebpackPlugin({
-      filename: '../../views/dist/index.html',
+      title: '易阅卷',
+      filename: path.resolve(rootPath, './dist/views/index.html'),
       template: 'views/index.html',
       chunksSortMode: 'auto',
       alwaysWriteToDisk: true,
       inject: true,
+      // chunks: ['vendor', 'app'],
       minify: {
         removeComments: true, // 去掉注释
         minifyJS: true, // 压缩js

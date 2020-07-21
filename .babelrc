@@ -9,5 +9,5 @@
     }],
     'stage-3'
   ],
-  plugins: ['transform-runtime', 'syntax-dynamic-import']
+  plugins: ['transform-runtime', 'syntax-dynamic-import', ["import", { "libraryName": "vant", "libraryDirectory": "es", "style": true }]]
 }

@@ -8,6 +8,18 @@ const compression = require('compression')
 const ejs = require('ejs')
 const session = require('express-session')
 const router = require('./routes/com')
+const appConfig = require('./app.config.js')
+/* var RedisStore = require('connect-redis')(session)
+const redis = require('redis')
+let client = redis.createClient({
+  host:'10.0.114.11',
+  port:'6379',
+  db:1,
+  ttl: 60 * 60 * 6, //Session的有效期为6h
+  logErrors : true,
+  password:'everbright'
+}) */
+
 const app = express()
 // 启动gzip压缩
 app.use(compression())
@@ -28,7 +40,7 @@ app.use(webpackDevMiddleware(compiler, {
 app.use(webpackHotMiddleware(compiler))
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, 'dist/views'))
 app.engine('html', ejs.__express)
 app.set('view engine', 'html')
 
@@ -37,17 +49,20 @@ app.set('view engine', 'html')
 app.use(logger('dev'))
 app.use(bodyParser.json({limit:'10mb'}))
 app.use(bodyParser.urlencoded({ extended: false, limit:'10mb'}))
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'static')))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'dist')))
 app.use(session({
   secret: '9208',
-  // name: 'www',   // 这里的name值得是cookie的name，默认cookie的name是：connect.sid
+  name: 'yuejuanScan_mobile' + appConfig.poxcyPath.replace(/\//g, '_'), // 这里的name值得是cookie的name，默认cookie的name是：connect.sid
   cookie: {
     // maxAge: 24*60*60*1000 
   }, // 设置maxAge是80000ms，即80s后session和相应的cookie失效过期
   rolling: true,
   resave: false,
-  saveUninitialized:true
+  saveUninitialized: true,
+  /* store: new RedisStore({
+    client: client
+  }) */
 }));
 
 app.use(router)
