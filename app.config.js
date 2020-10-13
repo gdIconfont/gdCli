@@ -7,7 +7,7 @@ var appConfig = {
   cjBaseUrl: '',
   outerUrl: '', // 外网地址
   imgUrl: '', // 图片地址
-  poxcyPath: '/njs_3032',
+  poxcyPath: '/njs_3000',
   nginx: false
 }
 

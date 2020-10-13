@@ -80,6 +80,7 @@ module.exports = {
     splitChunks: {
       chunks: "all",
       maxAsyncRequests: 1,
+      minChunks: 3,
       cacheGroups: {
         libs: {
           name: "vendor",

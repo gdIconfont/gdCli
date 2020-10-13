@@ -5,7 +5,7 @@
       window.requestAnimationFrame(resize)
     } else {
       if (ww > 750) {
-        ww = 750
+        ww = 375
       }
       document.documentElement.style.fontSize = ww * 100 / 750 + 'px'
     }

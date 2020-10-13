@@ -3,21 +3,54 @@ const router = express.Router()
 const request = require('./request')
 const URL = require('url')
 
+function getUserKsbdInfo (urlParams, req, res) {
+  return request({
+    url:'/yxx/getUserKsbdInfo.jsmeb',
+    token:urlParams.appToken,
+    baseUrl:urlParams.appUrl,
+    params:[urlParams.appUser,true,urlParams.appId],
+    next: true
+  },req, res)
+}
+
 //拦截器
-router.all('*', function (req, res, next) {
+router.all('*', async function (req, res, next) {
   if (req.url == "/favicon.ico") return res.end();
   const urlParams = URL.parse(req.url, true).query
-  if (urlParams.token) {
+  if (urlParams.token || urlParams.appToken) {
     req.session.user = {}
     let fontUrl = ''
     let params = []
+    if (urlParams.appToken){
+      const data = await getUserKsbdInfo(urlParams, req, res)
+      if (data && data.result) {
+        if (!data.result.apiUrl) {
+          res.json({
+            status:200,
+            result:{
+              code:0,
+              msg:'请先进行账号绑定'
+            }
+          })
+        } else {
+          if (data.result.apiToken) {
+            req.session.user = {
+              token:data.result.apiToken,
+              userId:data.result.ksh,
+              userName:data.result.xm,
+              baseUrl:urlParams.appUrl
+            }
+          }
+        }
+      }
+    }
     for (var i in urlParams) {
       if (i == "fontUrl") {
       	fontUrl = '#/' + urlParams[i]
       	continue;
       }
       req.session.user[i] = urlParams[i]
-      if (~['token', 'name', 'appToken', 'apiUrl', 'xm', 'openid'].indexOf(i)) continue
+      if (~['token', 'name', 'appToken', 'appUrl', 'xm', 'openid', 'appId', 'appUser'].indexOf(i)) continue
       if (i == "unionid") {
         i = 'bindUnionid'
         urlParams[i] = 1
@@ -85,8 +118,9 @@ router.get('/', function (req, res) {
 router.post('/user/login.jsmeb', function (req, res) {
   request({
     url: req.url,
-    params: req.body.data
-  }, req, res, function (data) {
+    params: req.body.data,
+    next: true
+  }, req, res).then(data => {
     console.log('data', data)
     if (data && data.result) {
       if (data.result.lu) {

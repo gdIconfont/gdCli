@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/yuejuanScan_mobile",
-    "nodemon": "nodemon --inspect --config nodemon.json ./bin/yuejuanScan_mobile",
-    "dev": "supervisor -w routes,app.js,build,app.config.js ./bin/yuejuanScan_mobile",
+    "start": "node ./bin/www",
+    "nodemon": "nodemon --inspect --config nodemon.json ./bin/www",
+    "dev": "supervisor --inspect -w routes,app.js,build,app.config.js ./bin/www",
     "build": "webpack --hide-modules --progress --config build/webpack.prod.conf"
   },
   "dependencies": {
@@ -72,7 +72,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-pxtorem": "^4.0.1",
     "script-ext-html-webpack-plugin": "^2.1.4",
-    "source-map-loader": "^1.0.0",
+    "source-map-loader": "^1.1.1",
     "style-loader": "^0.19.1",
     "url-loader": "^0.6.2",
     "vue-easytable": "^1.7.2",

@@ -2,29 +2,24 @@ var config = require('../app.config')
 var cbaseUrl = config.baseUrl
 var axios = require('axios')
 
-function request (options, req, res, cb) {
-  var params = options.params || []
+function request (options, req, res) {
+  const params = options.params || []
+  const method = options.method || req.method
   // var url = options.url
-  var baseUrl = options.baseUrl
-  var token = options.token || ''
-  // token统一放在user对象下
-  try {
-    token = req.session.user.token || ''
-  } catch (e) {
-    token = ''
-  }
-  var url = `${options.url}.ssoeb?ebtoken=${token}`
-  if (!baseUrl) baseUrl = cbaseUrl
+  const baseURL = options.baseUrl || (req.session.user && req.session.user.baseUrl) || cbaseUrl
+  const token = options.token || (req.session.user && req.session.user.token) || ''
+  let url = `${options.url}.ssoeb?ebtoken=${token}`
+  if (method === 'GET') url = `${options.url}.ssoeb?ebtoken=${token}&jseb=${params.join(',')}`
   return axios({
-    method: req.method,
+    method,
     url,
-    baseURL: baseUrl,
-    data: req.method === 'GET' ? '' : Object(params),
+    baseURL,
+    data: method === 'GET' ? '' : Object(params),
     timeout: options.timeout || 180000,
     headers: {
       'Content-Type': 'text/html;charset=utf-8',
-      'Content-Length': Buffer.byteLength(JSON.stringify(params)),
-      // 'ebauth': token
+      // 'Content-Length': Buffer.byteLength(JSON.stringify(params), 'uft8'),
+      'ebauth': token
     },
     transformResponse: [function (data) {
       // 对 data 进行任意转换处理
@@ -43,14 +38,14 @@ function request (options, req, res, cb) {
       data
     }
     console.log(resData)
-    if (cb) return cb(data)
+    if (options.next) return data
     res.json(data)
   })
   .catch(error => {
     console.log('<----------------------错误日志---------------------->')
     console.log(error)
     // 请求不在2**内的
-    if (cb) return cb(error)
+    if (options.next) return error
     res.json(error)
   })
 }

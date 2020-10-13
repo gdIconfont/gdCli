@@ -1,17 +1,18 @@
 <template>
   <div class="app-view container">
     <transition name="fade">
-      <keep-alive :exclude="['createKs', 'ksIndex', 'testDetail']">
+      <keep-alive>
 		    <router-view />
       </keep-alive>
     </transition>
-		<loading v-show="$store.state.showLoading"></loading>
+		<loading v-show="showLoading"></loading>
   </div>
 </template>
 
 <script>
 import loading from 'components/loading.vue'
 import FastClick from 'fastclick'
+import {mapGetters} from 'vuex'
 export default {
   name: 'app',
   components: {
@@ -20,6 +21,11 @@ export default {
   data () {
     return {
     }
+  },
+  computed: {
+    ...mapGetters([
+      'showLoading'
+    ])
   },
   mounted () {
     FastClick.attach(document.body)
