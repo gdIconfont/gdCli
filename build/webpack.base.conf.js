@@ -38,15 +38,15 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   module: {
     rules: [
-      /* {
-        test: /\.js$/,
+      {
+        test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
         include: path.resolve(rootPath, './src/'),
         options: {
           formatter: require('eslint-friendly-formatter')
         }
-      }, */
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader'
