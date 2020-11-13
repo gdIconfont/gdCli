@@ -6,14 +6,7 @@ import actions from './actions'
 Vue.use(Vuex)
 const state = {
   showLoading: false,
-  userInfo: {}, // 用户信息
-  jsInfo: {},
-  ksLx: [],
-  xq: {},
-  currentKs: {}, // 当前考试
-  pjlc: [],
-  ksty: {}, // 考生类型
-  kskm: {} // 考试答题卡信息
+  userInfo: {} // 用户信息
 }
 
 export default new Vuex.Store({

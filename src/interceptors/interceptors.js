@@ -5,21 +5,20 @@ let request = 0
 let $vm = null
 // 创建axios实例
 const service = axios.create({
-  baseURL: appConfig.baseApi, // api 的 base_url
+  baseURL: appConfig.baseApi // api 的 base_url
 })
 // 添加请求拦截器
 service.interceptors.request.use(function (config) {
   config.method.toUpperCase() === 'GET' ? delete config.data : delete config.params
   // 在发送请求之前做某事
   request++
-  
-  config.loading && $vm.$store.dispatch('showLoading', true)
+  $vm.$store.dispatch('showLoading', true)
   return config
 }, function (error) {
   // 请求错误时做些事
   request--
   if (request === 0) {
-    config.loading && $vm.$store.dispatch('showLoading', false)
+    $vm.$store.dispatch('showLoading', false)
     $vm = null
   }
   return Promise.reject(error)

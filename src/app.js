@@ -43,17 +43,14 @@ import {
 } from 'vant'
 
 Vue.use(Icon).use(Dialog).use(Checkbox).use(CheckboxGroup).use(RadioGroup)
-.use(Radio).use(Popup).use(Picker).use(Switch).use(Loading).use(Tab).use(Tabs)
-.use(PullRefresh).use(List).use(Col).use(Row).use(Progress).use(Divider).use(Button)
-.use(Cell).use(CellGroup).use(Notify).use(Search).use(ActionSheet).use(Form).use(Field)
-.use(Sticky).use(Swipe).use(SwipeItem)
+  .use(Radio).use(Popup).use(Picker).use(Switch).use(Loading).use(Tab).use(Tabs)
+  .use(PullRefresh).use(List).use(Col).use(Row).use(Progress).use(Divider).use(Button)
+  .use(Cell).use(CellGroup).use(Notify).use(Search).use(ActionSheet).use(Form).use(Field)
+  .use(Sticky).use(Swipe).use(SwipeItem)
 Vue.prototype.$confirm = Dialog.confirm
 Vue.prototype.$util = util
-// Vue.prototype.$toast = Toast
 
 Vue.config.productionTip = false
-// Vue.use(Button)
-// Vue.prototype.$message = message
 if (module.hot) {
   module.hot.accept()
 }
