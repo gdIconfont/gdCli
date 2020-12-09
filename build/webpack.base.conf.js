@@ -1,5 +1,6 @@
 const path = require('path')
 const os = require('os')
+const fs = require('fs')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
@@ -13,12 +14,26 @@ const appConfig = require('../app.config.js')
 const rootPath = process.cwd()
 let happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
 let outputPath = path.resolve(rootPath, './dist/static/')
+
+function copyFile (param) {
+  const sourceFile = path.resolve(param.sourcePath, param.fileName)
+  const destFile = path.resolve(param.destPath, param.fileName)
+  const readStream = fs.createReadStream(sourceFile)
+  const writeStream = fs.createWriteStream(destFile)
+  readStream.pipe(writeStream)
+}
+copyFile({
+  fileName: 'app.config.js',
+  sourcePath: rootPath,
+  destPath: path.resolve(rootPath, 'dist')
+})
+
 module.exports = {
   output: {
     path: outputPath,
     filename: '[name].js',
-    chunkFilename: `[name].js?v=${Math.random()}`,
-    publicPath: (appConfig.nginx ? appConfig.poxcyPath + '/static/' : '/static/')
+    chunkFilename: '[name].js',
+    publicPath: './static/'
   },
   externals: {
     /* 'vue': 'Vue',
@@ -31,6 +46,7 @@ module.exports = {
     alias: {
       'components': path.resolve(rootPath, './src/components'),
       '@': path.resolve('src'),
+      'util': path.resolve(rootPath, './src/plugins/util'),
       'vue$': 'vue/dist/vue.esm.js'
     },
     // mainFields: ['module', 'main']
@@ -43,6 +59,7 @@ module.exports = {
         loader: 'eslint-loader',
         enforce: 'pre',
         include: path.resolve(rootPath, './src/'),
+        exclude: path.resolve(rootPath, './src/plugins'),
         options: {
           formatter: require('eslint-friendly-formatter')
         }

@@ -1,28 +1,12 @@
 var util = {
   // 解析链接上面的参数
   getRequest (url) {
-    url = url || location.href
-    const urlList = url.split('?')
-    let theRequest = {}
-    if (urlList && urlList.length > 1) {
-      var str = urlList[1]
-      if (str.indexOf('#!/') > -1) {
-        str = str.replace('#!/', '')
-      }
-      if (str.indexOf('#/') > -1) {
-        str = str.replace('#/', '')
-      }
-      var strs = str.split('&')
-      for (var i = 0; i < strs.length; i++) {
-        var arr = strs[i].split('=')
-        let val = unescape(strs[i].substring(arr[0].length + 1))
-        if (val) {
-          val = val.replace(/@/g, '=')
-        }
-        theRequest[arr[0]] = val
-      }
-    }
-    return theRequest
+    const params = {}
+    url = (url || location.href).replace(/.*\?(.*)/, '$1')
+    url.replace(/([^=&]*)=([^&]*)/g, (match, a, b) => {
+      params[a] = b
+    })
+    return params
   },
   dateFormat (fmt, date) {
     let ret

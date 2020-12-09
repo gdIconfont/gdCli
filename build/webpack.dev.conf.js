@@ -13,7 +13,8 @@ module.exports = merge(baseWebpackConfig, {
   },
   output: {
     hotUpdateChunkFilename: 'update.js',
-    hotUpdateMainFilename: 'update.json'
+    hotUpdateMainFilename: 'update.json',
+    publicPath: '/static/'
   },
   module: {
     rules: [{
