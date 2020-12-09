@@ -4,7 +4,6 @@ var appConfig = {
   outerUrl: '', // 外网地址
   imgUrl: '', // 图片地址
   poxcyPath: '/njs_3000',
-  nginx: false
 }
 
 if (typeof module === 'object' && module.exports) {
