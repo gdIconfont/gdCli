@@ -1,5 +1,4 @@
 var appConfig = {
-  baseApi: './',
   baseUrl: '', // 服务端请求地址
   outerUrl: '', // 外网地址
   imgUrl: '', // 图片地址

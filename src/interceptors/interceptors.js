@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import axios from 'axios'
-import appConfig from '../../app.config'
 let request = 0
 let $vm = null
 // 创建axios实例
 const service = axios.create({
-  baseURL: appConfig.baseApi // api 的 base_url
+  baseURL: '.' // api 的 base_url
 })
 // 添加请求拦截器
 service.interceptors.request.use(function (config) {
