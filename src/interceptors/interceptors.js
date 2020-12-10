@@ -28,12 +28,8 @@ service.interceptors.response.use(function (response) {
   const data = response.data || {}
   // 对响应数据做些事
   request--
-  if (data.result) {
-    // if (data.result.code + '' !== '0') {
-    //   $vm.$toast(data.result.msg || '请求异常，请稍后重试')
-    // }
-  } else {
-    $vm.$toast('请求异常，请稍后重试')
+  if (data.msg || data.message) {
+    $vm.$toast(data.msg || data.message)
   }
   if (data.error) {
     const message = data.error.message || data.error.msg || '请求异常，请稍后重试'
