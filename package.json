@@ -20,7 +20,7 @@
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "fastclick": "^1.0.6",
-    "highcharts": "^8.1.0",
+    "highcharts": "^9.0.0",
     "morgan": "^1.9.1",
     "redis": "^3.0.2",
     "serve-favicon": "~2.4.5",
